@@ -89,14 +89,18 @@ class OurTeamViewSet(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.data,status=status.HTTP_402_PAYMENT_REQUIRED)
         
-    def get(self,request):
-        teams_data=OurTeam.objects.all()
-        if teams_data:
-            serializer=OurTeamSerializer(teams_data,many=True)
-            if serializer.is_valid:
-               return Response(serializer.data,status=status.HTTP_200_OK)
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message":"No members found"},status=status.HTTP_204_NO_CONTENT)
+    def get(self, request):
+        teams_data = OurTeam.objects.all()
+        if not teams_data:
+            return Response({"message": "No members found"}, status=status.HTTP_204_NO_CONTENT)
+        grouped_data = {}
+        for team_member in teams_data:
+            position_id = team_member.position
+            if position_id not in grouped_data:
+                grouped_data[position_id] = []
+            serialized_member = OurTeamSerializer(team_member).data
+            grouped_data[position_id].append(serialized_member)
+        return Response(grouped_data, status=status.HTTP_200_OK)
 
 
 def gallery(request):
