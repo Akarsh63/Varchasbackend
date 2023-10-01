@@ -1,6 +1,6 @@
 import os
 from decouple import config
-
+from datetime import timedelta
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'rest_framework',
     'app_apis',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -45,8 +46,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware'
 ]
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Add your frontend URL here
+]
+
 ROOT_URLCONF = 'varchas_iitj.urls'
+
+SIMPLE_JWT = {
+     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+     'ROTATE_REFRESH_TOKENS': True,
+     'BLACKLIST_AFTER_ROTATION': True
+}
+
 
 TEMPLATES = [
     {
@@ -169,6 +181,10 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100
 }
+

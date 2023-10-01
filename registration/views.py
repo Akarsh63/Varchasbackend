@@ -11,8 +11,40 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 from .serializers import TeamsSerializer
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response 
+from rest_framework.views import APIView
+from rest_framework import status
+from random import randint
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def CreateTeamView(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    serializer = TeamsSerializer(data=request.data)
+    if serializer.is_valid():
+        category = serializer.validated_data['category']
+        teamsize = serializer.validated_data['teamsize']
+        sport = serializer.validated_data['sport']
+        team_id = "VA-{}-{}-{}".format(sport[:3].upper(), user.username[:3].upper(), randint(1, 999))
+        team = TeamRegistration.objects.create(
+            teamId=team_id,
+            sport=sport,
+            college=user_profile.college,
+            captian=user_profile,
+            score=-1, 
+            category=category,
+            teamsize=teamsize,
+            teamcount=1 
+        )
+        user_profile.teamId=team
+        user_profile.save()
+        return Response({"message": "Team created successfully.", "team_id": team.teamId}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    
 class TeamFormationView(CreateView):
     form_class = TeamRegistrationForm
     template_name = 'registration/team.html'
@@ -57,6 +89,45 @@ class TeamFormationView(CreateView):
 
             return super(TeamFormationView, self).form_valid(form)
         return HttpResponse("404")
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def removeplayer(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=user)
+    team_id = user_profile.teamId
+
+    if user_profile.teamId is None:
+        return Response({"message": "You must be registered in a team to complete this operation."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    team = TeamRegistration.objects.get(teamId=team_id)
+    if user_profile != team.captian:
+        return Response({"message": "Only the captain can remove a player from the team."},
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    user_to_remove_id = request.data.get('user')
+    user_to_remove = User.objects.filter(id=user_to_remove_id).first()  # Get the User object
+    
+    if user_to_remove is None:
+        return Response({"message": "The specified user does not exist."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    player_to_remove = UserProfile.objects.filter(user=user_to_remove).first()  # Get the associated UserProfile
+    
+    if player_to_remove is None:
+        return Response({"message": "The specified user is not in the team."},
+                        status=status.HTTP_400_BAD_REQUEST)
+    if user_profile == player_to_remove:
+        return Response({"message": "You can not remove your self"},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    player_to_remove.teamId = None
+    player_to_remove.save()
+    team.teamcount=team.teamcount-1
+    team.save()
+    return Response({"message": "Player removed from the team successfully."},
+                    status=status.HTTP_200_OK)
 
 
 # @login_required(login_url="login")

@@ -14,5 +14,5 @@ urlpatterns = [
          name='navbarsuboptionpage'),
     path('mainapi/', OurTeamViewSet.as_view(), name='teams'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    re_path(r'^comingSoon$', comingSoon, name='comingSoon'),
+    re_path('comingSoon', comingSoon, name='comingSoon'),
 ]

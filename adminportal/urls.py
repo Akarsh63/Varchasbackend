@@ -7,11 +7,11 @@ app_name = 'adminportal'
 
 urlpatterns = [
     path('mail', sendMail.as_view(), name='mail'),
-    path(r'teamsEsports$', dashboardEsportsTeams, name='deteams'),
-    path(r'updateScore/(<str:sport>)/', updateScore, name='uscore'),
-    path(r'teams$', dashboardTeams, name='dteams'),
-    path(r'users$', dashboardUsers, name='dusers'),
-    path(r'excel$', downloadExcel, name='teamInfo'),
-    path(r'excelEsports$', downloadEsportsExcel, name='esportsInfo'),
+    path('teamsEsports', dashboardEsportsTeams, name='deteams'),
+    path('updateScore/(<str:sport>)/', updateScore, name='uscore'),
+    path('teams', dashboardTeams, name='dteams'),
+    path('users', dashboardUsers, name='dusers'),
+    path('excel', downloadExcel, name='teamInfo'),
+    path('excelEsports', downloadEsportsExcel, name='esportsInfo'),
     path('', dashboard, name='dashboard'),
 ]

@@ -68,8 +68,8 @@ class UserProfile(models.Model):
     no_of_days = models.CharField(max_length=1, choices=DAYS_CHOICES,blank=True)
     id_issued = models.BooleanField(default=False)
     qr_code = models.ImageField(upload_to='qr_code', blank=True, null=True)
-    teamId = models.ForeignKey("registration.TeamRegistration", on_delete=models.SET_NULL, null=True, related_name="member")
-
+    teamId = models.ForeignKey("registration.TeamRegistration", on_delete=models.SET_NULL, null=True, related_name="member",blank=True)
+    isesports=models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
 
