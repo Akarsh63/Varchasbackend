@@ -9,10 +9,6 @@ git.py
 *.save.1
 *.save.2
 *.save
-varchasenv/
-env/
-myenv/
-.env
 build/
 develop-eggs/
 dist/

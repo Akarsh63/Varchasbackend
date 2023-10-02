@@ -70,6 +70,11 @@ class UserProfile(models.Model):
     qr_code = models.ImageField(upload_to='qr_code', blank=True, null=True)
     teamId = models.ForeignKey("registration.TeamRegistration", on_delete=models.SET_NULL, null=True, related_name="member",blank=True)
     isesports=models.BooleanField(default=False)
+    team_member1_ingame_id = models.CharField(max_length=128, blank=True, null=True)
+    team_member2_ingame_id = models.CharField(max_length=128, blank=True, null=True)
+    team_member3_ingame_id = models.CharField(max_length=128, blank=True, null=True)
+    team_member4_ingame_id = models.CharField(max_length=128, blank=True, null=True)
+    team_member5_ingame_id = models.CharField(max_length=128, blank=True, null=True)
     def __str__(self):
         return self.user.username
 

@@ -23,28 +23,55 @@ from random import randint
 def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    serializer = TeamsSerializer(data=request.data)
+    if user_profile.teamId is not None:
+                message = "You are already in team {}".format(user_profile.teamId)
+                message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                return Response({"message": message}, status=status.HTTP_403_FORBIDDEN)
+    sport = request.data['sport']
+    sport_info = int(sport) 
+    requested_data = {
+            "sport": sport_info,
+            "category": request.data['category'],
+            "teamsize": request.data['teamsize'],
+    }
+    serializer = TeamsSerializer(data=requested_data)
     if serializer.is_valid():
         category = serializer.validated_data['category']
         teamsize = serializer.validated_data['teamsize']
         sport = serializer.validated_data['sport']
-        team_id = "VA-{}-{}-{}".format(sport[:3].upper(), user.username[:3].upper(), randint(1, 999))
+        spor = TeamRegistration.SPORT_CHOICES[int(sport)-1][1][:3]
+        team_id = "VA-{}-{}-{}".format(spor[:3].upper(), user.username[:3].upper(), randint(1, 999))
+        teams_data = request.data.get('teams', [])
         team = TeamRegistration.objects.create(
             teamId=team_id,
             sport=sport,
             college=user_profile.college,
             captian=user_profile,
-            score=-1, 
+            score=-1,
             category=category,
             teamsize=teamsize,
-            teamcount=1 
+            teamcount=1,
+            teams=teams_data
         )
-        user_profile.teamId=team
+        user_profile.teamId = team
+        if sport_info in [13, 15]:
+            team.teamcount=team.teamsize
+            team.save()
+            user_profile.team_member1_ingame_id = request.data.get('team_member1_ingame_id')
+            if sport_info == 13:
+                user_profile.team_member2_ingame_id = request.data.get('team_member2_ingame_id')
+                user_profile.team_member3_ingame_id = request.data.get('team_member3_ingame_id')
+                user_profile.team_member4_ingame_id = request.data.get('team_member4_ingame_id')
+            if sport_info == 14:
+                user_profile.team_member2_ingame_id = request.data.get('team_member2_ingame_id')
+                user_profile.team_member3_ingame_id = request.data.get('team_member3_ingame_id')
+                user_profile.team_member4_ingame_id = request.data.get('team_member4_ingame_id')
+                user_profile.team_member5_ingame_id = request.data.get('team_member5_ingame_id')
+            user_profile.isesports=True
         user_profile.save()
         return Response({"message": "Team created successfully.", "team_id": team.teamId}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
 class TeamFormationView(CreateView):
     form_class = TeamRegistrationForm
     template_name = 'registration/team.html'
