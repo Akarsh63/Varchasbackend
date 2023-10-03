@@ -1,5 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator
+from django.utils import timezone
+
+class PasswordResetRequest(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=120)
+    otp = models.PositiveIntegerField(validators=[MaxValueValidator(9999)])
+    expiration_time = models.DateTimeField(blank=True,null=True)
+
+    def __str__(self):
+        return self.user.email
+
+    def save(self, *args, **kwargs):
+        now = timezone.now()  # Get the current datetime with timezone information
+        self.expiration_time = now + timezone.timedelta(minutes=5)  # Use timezone.timedelta
+        super().save(*args, **kwargs)
 
 
 class UserProfile(models.Model):
