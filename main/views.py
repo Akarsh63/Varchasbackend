@@ -121,6 +121,6 @@ def payment(request):
         userprofile.amount_required=amount
         userprofile.save()
 
-        return Response({"amount":amount})
+        return Response({"message":amount},status=status.HTTP_200_OK)
   
         
