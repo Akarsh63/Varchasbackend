@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-# @csrf_exempt
+@csrf_exempt
 def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
