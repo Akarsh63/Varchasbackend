@@ -12,7 +12,6 @@ class SponsorType(models.Model):
     def __str__(self):
         return self.name
 
-
 class Sponsor(models.Model):
     name = models.CharField(max_length=128)
     # logo = VersatileImageField(upload_to='sponsor')

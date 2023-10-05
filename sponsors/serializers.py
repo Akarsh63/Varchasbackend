@@ -1,8 +1,13 @@
-from .models import Sponsor
+from .models import Sponsor,SponsorType
 from rest_framework import serializers
 
 
-class SponsorSerializer(serializers.HyperlinkedModelSerializer):
+class SponsorTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SponsorType
+        fields = ['name','order']
+
+class SponsorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sponsor
-        fields = ['name', 'sponsor_type', 'link', 'logo', ]
+        fields = '__all__'
