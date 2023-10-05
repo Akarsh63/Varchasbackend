@@ -51,7 +51,7 @@ class RegisterUserView(APIView):
             profile_serializer = UserProfileSerializer(data=profile_data)
             if profile_serializer.is_valid():
                 profile_serializer.save()
-                return Response(profile_serializer.data, status=status.HTTP_201_CREATED)
+                return Response({"message":'User created Successfully'}, status=status.HTTP_201_CREATED)
             else:
                 user.delete() 
                 return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

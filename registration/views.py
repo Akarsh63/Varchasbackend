@@ -12,9 +12,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from random import randint
+from django.views.decorators.csrf import csrf_exempt
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@csrf_exempt
 def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
