@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Add your frontend URL here
+    "http://localhost:3000",   "https://www.varchas23.in" # Add your frontend URL here
 ]
 
 ROOT_URLCONF = 'varchas_iitj.urls'
