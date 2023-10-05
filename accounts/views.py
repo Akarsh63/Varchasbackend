@@ -17,6 +17,7 @@ from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.views import LoginView
 from django.shortcuts import reverse, redirect
+from django.contrib.auth.hashers import make_password
 
 # api method to register the user 
 
@@ -27,13 +28,13 @@ class RegisterUserView(APIView):
             return Response({"Error": "Email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
         if request.data.get('password') != request.data.get('confirm_password'):
             return Response({"Error": "Passwords don't match!"}, status=status.HTTP_400_BAD_REQUEST)
-
+        hashed_password = make_password(request.data["password"])
         user_data = {
             "username": request.data["email"],
             "email": request.data["email"],
             "first_name": request.data.get("first_name", ""),
             "last_name": request.data.get("last_name", ""),
-            "password": request.data["password"],
+            "password": hashed_password,
         }
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
