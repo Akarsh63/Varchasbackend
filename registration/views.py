@@ -67,7 +67,7 @@ def CreateTeamView(request):
             user1=request.user
             subject='Varchas23 | Confirmation of Team registration'
             message = f'Hi {user1.first_name}, Thank you for being part of Varchas23 . The TeamId of {TeamRegistration.SPORT_CHOICES[int(sport)-1]} is {team_id}.'
-            email_from = settings.EMAIL_HOST_USER
+            email_from = 'varchas'
             recipient_list = [user1.email,]
             send_mail( subject, message, email_from, recipient_list )
             user_profile.teamId.add(team)
@@ -75,18 +75,18 @@ def CreateTeamView(request):
                     team.teamcount = team.teamsize
                     team.save()
                     if sport_info == 13:
-                        user_profile.team_member1_bgmi_ingame_id = request.data.get('team_member1_ingame_id')
-                        user_profile.team_member2_bgmi_ingame_id = request.data.get('team_member2_ingame_id')
-                        user_profile.team_member3_bgmi_ingame_id = request.data.get('team_member3_ingame_id')
-                        user_profile.team_member4_bgmi_ingame_id = request.data.get('team_member4_ingame_id')
+                        user_profile.team_member1_bgmi_ingame_id = request.data.get('id1')
+                        user_profile.team_member2_bgmi_ingame_id = request.data.get('id2')
+                        user_profile.team_member3_bgmi_ingame_id = request.data.get('id3')
+                        user_profile.team_member4_bgmi_ingame_id = request.data.get('id4')
                     if sport_info == 14:
-                        user_profile.team_member1_val_ingame_id = request.data.get('team_member1_ingame_id')
-                        user_profile.team_member2_val_ingame_id = request.data.get('team_member2_ingame_id')
-                        user_profile.team_member3_val_ingame_id = request.data.get('team_member3_ingame_id')
-                        user_profile.team_member4_val_ingame_id = request.data.get('team_member4_ingame_id')
-                        user_profile.team_member5_val_ingame_id = request.data.get('team_member5_ingame_id')
+                        user_profile.team_member1_val_ingame_id = request.data.get('id1')
+                        user_profile.team_member2_val_ingame_id = request.data.get('id2')
+                        user_profile.team_member3_val_ingame_id = request.data.get('id3')
+                        user_profile.team_member4_val_ingame_id = request.data.get('id4')
+                        user_profile.team_member5_val_ingame_id = request.data.get('id5')
                     if sport_info ==15 :
-                        user_profile.team_member1_cr_ingame_id = request.data.get('team_member1_ingame_id')
+                        user_profile.team_member1_cr_ingame_id = request.data.get('id1')
 
                     user_profile.isesports = True
                 
