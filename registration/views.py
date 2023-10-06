@@ -75,18 +75,19 @@ def CreateTeamView(request):
                     team.teamcount = team.teamsize
                     team.save()
                     if sport_info == 13:
-                        user_profile.team_member1_bgmi_ingame_id = request.data.get('team_id').id1
-                        user_profile.team_member2_bgmi_ingame_id = request.data.get('team_id').id2
-                        user_profile.team_member3_bgmi_ingame_id = request.data.get('team_id').id3
-                        user_profile.team_member4_bgmi_ingame_id = request.data.get('team_id').id4
+                        user_profile.team_member1_bgmi_ingame_id = request.data.get('team_id', {}).get('id1')
+                        user_profile.team_member2_bgmi_ingame_id = request.data.get('team_id', {}).get('id2')
+                        user_profile.team_member3_bgmi_ingame_id = request.data.get('team_id', {}).get('id3')
+                        user_profile.team_member4_bgmi_ingame_id = request.data.get('team_id', {}).get('id4')
                     if sport_info == 14:
-                        user_profile.team_member1_val_ingame_id = request.data.get('team_id').id1
-                        user_profile.team_member2_val_ingame_id = request.data.get('team_id').id2
-                        user_profile.team_member3_val_ingame_id = request.data.get('team_id').id3
-                        user_profile.team_member4_val_ingame_id = request.data.get('team_id').id4
-                        user_profile.team_member5_val_ingame_id = request.data.get('team_id').id5
+                        user_profile.team_member1_val_ingame_id = request.data.get('team_id', {}).get('id1')
+                        user_profile.team_member2_val_ingame_id = request.data.get('team_id', {}).get('id2')
+                        user_profile.team_member3_val_ingame_id = request.data.get('team_id', {}).get('id3')
+                        user_profile.team_member4_val_ingame_id = request.data.get('team_id', {}).get('id4')
+                        user_profile.team_member5_val_ingame_id = request.data.get('team_id', {}).get('id5')
                     if sport_info ==15 :
-                        user_profile.team_member1_cr_ingame_id = request.data.get('team_id').id1
+                        user_profile.team_member1_cr_ingame_id =request.data.get('team_id', {}).get('id1')
+
 
                     user_profile.isesports = True
                 
