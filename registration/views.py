@@ -91,6 +91,7 @@ def CreateTeamView(request):
                     user_profile.isesports = True
                 
             user_profile.save()
+            print(user_profile)
         return Response({"message": "Team(s) created successfully."}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
