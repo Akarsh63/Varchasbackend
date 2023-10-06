@@ -11,12 +11,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from django.conf import settings
 from random import randint
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-@csrf_exempt
 def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
@@ -63,7 +64,12 @@ def CreateTeamView(request):
                 teamcount=1,
                 teams=team_name
             )
-            
+            user1=request.user
+            subject='Varchas23 | Confirmation of Team registration'
+            message = f'Hi {user1.first_name}, Thank you for being part of Varchas23 . The TeamId of {TeamRegistration.SPORT_CHOICES[int(sport)-1]} is {team_id}.'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [user1.email,]
+            send_mail( subject, message, email_from, recipient_list )
             user_profile.teamId.add(team)
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize
@@ -83,6 +89,7 @@ def CreateTeamView(request):
                         user_profile.team_member1_cr_ingame_id = request.data.get('team_member1_ingame_id')
 
                     user_profile.isesports = True
+                
             user_profile.save()
         return Response({"message": "Team(s) created successfully."}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
