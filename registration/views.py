@@ -16,7 +16,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-@csrf_exempt
 def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
@@ -43,6 +42,7 @@ def CreateTeamView(request):
         "category": request.data['category'],
         "teamsize": request.data['teamsize'],
     }
+    print(requested_data)
     serializer = TeamsSerializer(data=requested_data)
     if serializer.is_valid():
         category = serializer.validated_data['category']
@@ -63,6 +63,7 @@ def CreateTeamView(request):
                 teamcount=1,
                 teams=team_name
             )
+            print(team)
             user_profile.teamId.add(team)
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize
@@ -83,6 +84,7 @@ def CreateTeamView(request):
 
                     user_profile.isesports = True
             user_profile.save()
+            print(user_profile)
         return Response({"message": "Team(s) created successfully."}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
