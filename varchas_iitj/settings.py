@@ -53,7 +53,7 @@ CORS_ALLOWED_ORIGINS = [
 ROOT_URLCONF = 'varchas_iitj.urls'
 
 SIMPLE_JWT = {
-     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
      'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
      'ROTATE_REFRESH_TOKENS': True,
      'BLACKLIST_AFTER_ROTATION': True
