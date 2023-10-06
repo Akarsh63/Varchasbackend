@@ -25,7 +25,7 @@ class TeamRegistration(models.Model):
     captian = models.ForeignKey(UserProfile, on_delete=models.CASCADE, blank=True, null=True)
     score = models.IntegerField(default=-1)
     category = models.CharField(max_length=1024, blank=True, null=True)
-    teams = models.JSONField(blank=True, default=list,null=True)
+    teams = models.CharField(blank=True, null=True,max_length=100)
     teamsize=models.IntegerField(default=1,blank=True,null=True)
     teamcount=models.IntegerField(default=1,blank=True,null=True)
     def __str__(self):

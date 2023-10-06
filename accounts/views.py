@@ -39,7 +39,7 @@ class RegisterUserView(APIView):
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
-            if request.data['phone'].length() > 10:
+            if len(request.data['phone']) > 10:
                 return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
             profile_data = {
                 "user": user.id,
@@ -184,19 +184,39 @@ def userleaveTeam(request):
 def userjoinTeam(request):
     user = request.user
     teamId = request.data.get('teamId')
-
+    print(teamId)
     if user is not None:
         user = get_object_or_404(UserProfile, user=user)
-        if user.teamId is not None:
-            message = "You are already in team {}".format(user.teamId)
-            message += "\nYou have to register again to join another team. \nContact Varchas administrators."
-            return Response({"message": message}, status=status.HTTP_403_FORBIDDEN)
         
         team = get_object_or_404(TeamRegistration, teamId=teamId)
-        if user.gender != team.captian.gender:
-            return Response({"message":"Sorry,Gender not matched!"},status=status.HTTP_406_NOT_ACCEPTABLE)
-        if(team.teamcount < team.teamsize):
-            user.teamId = team
+        sport = team.sport
+        sport_info = int(sport) 
+        if user.teamId.exists():
+            if sport_info in [1,2,3,4,5,6,7,8,9,10,11,12] :
+                teams=user.teamId.all()
+                for team in teams:
+                    if int(team.sport) in [1,2,3,4,5,6,7,8,9,10,11,12] :
+                        message = "You are not able to join this team"
+                        message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                        return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+            if sport_info in [13,14,15]:
+                teams=user.teamId.all()
+                for team in teams:
+                    if int(team.sport) == sport_info :
+                        message = "You are not able to join this team"
+                        message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                        return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+        # if user.gender != team.captian.gender:
+        #     return Response({"message":"Sorry,Gender not matched!"},status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+        team = get_object_or_404(TeamRegistration, teamId=teamId)
+        print(team.teamcount)
+        print(team.teamsize)
+        print(team)
+        if(int(team.teamcount) < int(team.teamsize)):
+            user.teamId.add(team)
             user.save()
             team.teamcount=team.teamcount+1
             team.save()
@@ -210,41 +230,44 @@ def userjoinTeam(request):
 def userDisplayteam(request):
     try:
         user_profile = get_object_or_404(UserProfile, user=request.user)
+        team_data = []
+        if user_profile.teamId.exists():
+            teams = user_profile.teamId.all()
+            for team in teams:
+                team_users_info = [
+                    {
+                        "user_id": user_data.user.id,
+                        "email": user_data.user.username,
+                        "phone": user_data.phone,
+                        "name": user_data.user.first_name + user_data.user.last_name
+                    }
+                    for user_data in UserProfile.objects.filter(teamId=team)
+                ]
+                team_info = {
+                    "team_id": team.teamId,
+                    "sport": team.sport,
+                    "college": team.college,
+                    "captain_username": team.captian.user.first_name + team.captian.user.last_name if team.captian else None,
+                    "score": team.score,
+                    "category": team.category,
+                    "players_info":team_users_info,
+                    "captain": team.captian==user_profile
+                }
+                
+                team_data.append(team_info)
         
-        team_data = None
-        users_data = None
-        if user_profile.teamId:
-            team_id = user_profile.teamId
-            team_data = get_object_or_404(TeamRegistration, teamId=team_id)
-            users_data = UserProfile.objects.filter(teamId=team_id)
-        if user_profile.teamId is None:
-            return Response({"message":"Join a team"},status=status.HTTP_404_NOT_FOUND)
+        if not team_data:
+            return Response({"message": "Join a team"}, status=status.HTTP_404_NOT_FOUND)
         
         response_data = {
-            "team_data": {
-                "team_id": team_data.teamId,
-                "sport": team_data.sport,
-                "college": team_data.college,
-                "captain_username": team_data.captian.user.first_name + team_data.captian.user.last_name if team_data.captian else None,
-                "score": team_data.score,
-                "category": team_data.category,
-            } if team_data else None,
-            "users_data": [
-                {
-                    "user_id": user_data.user.id,
-                    "email": user_data.user.username,
-                    "phone": user_data.phone,
-                    "name":user_data.user.first_name +user_data.user.last_name
-                }
-                for user_data in users_data
-            ] if users_data else None,
-            "is_captian":team_data.captian==user_profile
+            "team_data": team_data
         }
         
         return Response(response_data, status=status.HTTP_200_OK)
     
     except Exception as e:
         return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -253,7 +276,7 @@ def userDisplayProfile(request):
     if user is None:
         return Response({"message":"User not found!"},status=status.HTTP_404_NOT_FOUND)
     response_data = {
-                "team_id" : user.teamId.teamId if user.teamId else None,
+                "team_id": [team.teamId for team in user.teamId.all()] if user.teamId.exists() else None,
                 "college": user.college,
                 "user_id": user.user.id,
                 "email": user.user.username,

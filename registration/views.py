@@ -20,16 +20,28 @@ from django.views.decorators.csrf import csrf_exempt
 def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    if user_profile.teamId is not None:
-                message = "You are already in team {}".format(user_profile.teamId)
-                message += "\nYou have to register again to join another team. \nContact Varchas administrators."
-                return Response({"message": message}, status=status.HTTP_403_FORBIDDEN)
     sport = request.data['sport']
-    sport_info = int(sport) 
+    sport_info = int(sport)
+    if user_profile.teamId.exists():
+        if sport_info in [1,2,3,4,5,6,7,8,9,10,11,12] :
+            teams=user_profile.teamId.all()
+            for team in teams:
+                if int(team.sport) in [1,2,3,4,5,6,7,8,9,10,11,12] :
+                    message = "You are not able to that team"
+                    message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                    return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    
+        if sport_info in [13,14,15]:
+            teams=user_profile.teamId.all()
+            for team in teams:
+                if int(team.sport) == sport_info :
+                    message = "You are not able to that team"
+                    message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                    return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
     requested_data = {
-            "sport": sport_info,
-            "category": request.data['category'],
-            "teamsize": request.data['teamsize'],
+        "sport": sport_info,
+        "category": request.data['category'],
+        "teamsize": request.data['teamsize'],
     }
     serializer = TeamsSerializer(data=requested_data)
     if serializer.is_valid():
@@ -37,37 +49,43 @@ def CreateTeamView(request):
         teamsize = serializer.validated_data['teamsize']
         sport = serializer.validated_data['sport']
         spor = TeamRegistration.SPORT_CHOICES[int(sport)-1][1][:3]
-        team_id = "VA-{}-{}-{}".format(spor[:3].upper(), user.username[:3].upper(), randint(1, 999))
         teams_data = request.data.get('teams', [])
-        team = TeamRegistration.objects.create(
-            teamId=team_id,
-            sport=sport,
-            college=user_profile.college,
-            captian=user_profile,
-            score=-1,
-            category=category,
-            teamsize=teamsize,
-            teamcount=1,
-            teams=teams_data
-        )
-        user_profile.teamId = team
-        if sport_info in [13, 15]:
-            team.teamcount=team.teamsize
-            team.save()
-            user_profile.team_member1_ingame_id = request.data.get('team_member1_ingame_id')
-            if sport_info == 13:
-                user_profile.team_member2_ingame_id = request.data.get('team_member2_ingame_id')
-                user_profile.team_member3_ingame_id = request.data.get('team_member3_ingame_id')
-                user_profile.team_member4_ingame_id = request.data.get('team_member4_ingame_id')
-            if sport_info == 14:
-                user_profile.team_member2_ingame_id = request.data.get('team_member2_ingame_id')
-                user_profile.team_member3_ingame_id = request.data.get('team_member3_ingame_id')
-                user_profile.team_member4_ingame_id = request.data.get('team_member4_ingame_id')
-                user_profile.team_member5_ingame_id = request.data.get('team_member5_ingame_id')
-            user_profile.isesports=True
-        user_profile.save()
-        return Response({"message": "Team created successfully.", "team_id": team.teamId}, status=status.HTTP_201_CREATED)
+        for team_name in teams_data:
+            team_id = "VA-{}-{}-{}-{}".format(spor[:3].upper(), user.username[:3].upper(),randint(1, 99), randint(1, 9))
+            team = TeamRegistration.objects.create(
+                teamId=team_id,
+                sport=sport,
+                college=user_profile.college,
+                captian=user_profile,
+                score=-1,
+                category=category,
+                teamsize=teamsize,
+                teamcount=1,
+                teams=team_name
+            )
+            user_profile.teamId.add(team)
+            if sport_info in [13, 15]:
+                    team.teamcount = team.teamsize
+                    team.save()
+                    if sport_info == 13:
+                        user_profile.team_member1_bgmi_ingame_id = request.data.get('team_member1_ingame_id')
+                        user_profile.team_member2_bgmi_ingame_id = request.data.get('team_member2_ingame_id')
+                        user_profile.team_member3_bgmi_ingame_id = request.data.get('team_member3_ingame_id')
+                        user_profile.team_member4_bgmi_ingame_id = request.data.get('team_member4_ingame_id')
+                    if sport_info == 14:
+                        user_profile.team_member1_val_ingame_id = request.data.get('team_member1_ingame_id')
+                        user_profile.team_member2_val_ingame_id = request.data.get('team_member2_ingame_id')
+                        user_profile.team_member3_val_ingame_id = request.data.get('team_member3_ingame_id')
+                        user_profile.team_member4_val_ingame_id = request.data.get('team_member4_ingame_id')
+                        user_profile.team_member5_val_ingame_id = request.data.get('team_member5_ingame_id')
+                    if sport_info ==15 :
+                        user_profile.team_member1_cr_ingame_id = request.data.get('team_member1_ingame_id')
+
+                    user_profile.isesports = True
+            user_profile.save()
+        return Response({"message": "Team(s) created successfully."}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

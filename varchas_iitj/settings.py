@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  "https://www.varchas23.in"
+    "http://localhost:3001",  "https://www.varchas23.in"
 ]
 
 ROOT_URLCONF = 'varchas_iitj.urls'
@@ -186,7 +186,3 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100
 }
-CSRF_COOKIE_NAME = 'csrftoken'
-CSRF_COOKIE_DOMAIN='http://localhost:3000'
-SESSION_COOKIE_DOMAIN='http://localhost:3000'
-CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'

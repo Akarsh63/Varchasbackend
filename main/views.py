@@ -60,67 +60,79 @@ def payment(request):
     except UserProfile.DoesNotExist:
         return Response({"message": "User not registered yet!"}, status=status.HTTP_404_NOT_FOUND)
 
-    if userprofile.teamId is None:
-        return Response({"message": "You have to first register in a team."}, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        sport = userprofile.teamId.sport
-        if userprofile.teamId.captian != userprofile:
-           return Response({"message":'Ask your captain to complete the payment. If already done, please ignore.'})
-        amount=0
-        if sport == '2' and userprofile.teamId.captian == userprofile :
-           if userprofile.teamId.category=='men':
-               amount=1500
-           elif userprofile.teamId.category=='women':
-               amount=1200
-           else:
-               amount =1000
-        elif sport == '3' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=3500
-            elif userprofile.teamId.category=='women':
-               amount=2500
-        elif sport == '4' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=5000
-        elif sport == '5' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=5000
-            elif userprofile.teamId.category=='women':
-               amount=3000
-        elif sport == '6' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=1500
-            elif userprofile.teamId.category=='women':
-               amount=1200
-        elif sport == '7' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=1200
-        elif sport == '8' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=3500
-            elif userprofile.teamId.category=='women':
-               amount=2500
-        elif sport == '9' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=3500
-        elif sport == '10' and userprofile.teamId.captian == userprofile :
-            if userprofile.teamId.category=='men':
-               amount=3500
-        elif sport == '11' and userprofile.teamId.captian == userprofile :
-            amount=500
-        elif sport == '12' and userprofile.teamId.captian == userprofile :
-            amount=200
-        #   not comp
-        elif sport == '13' and userprofile.teamId.captian == userprofile :
-            amount=99
-        elif sport == '14' and userprofile.teamId.captian == userprofile :
-            amount=499
-        elif sport == '15' and userprofile.teamId.captian == userprofile :
-            amount=99
+    if userprofile.teamId.exists():
+        captain_teams = userprofile.teamId.filter(captian=userprofile)
         
-        userprofile.amount_required=amount
-        userprofile.save()
+        if captain_teams.exists():
+            total_amount = 0
+            for team in captain_teams:
+                sport = team.sport
+                amount = 0
+                if sport == '1':
+                    if team.category == 'men':
+                        amount = 200
+                    if team.category == 'women':
+                        amount=150
+                elif sport == '2':
+                    if team.category == 'men':
+                        amount = 1500
+                    elif team.category == 'women':
+                        amount = 1200
+                    else:
+                        amount = 1000
+                elif sport == '3':
+                    if team.category == 'men':
+                        amount = 3500
+                    elif team.category == 'women':
+                        amount = 2500
+                elif sport == '4':
+                    if team.category == 'men':
+                        amount = 5000
+                elif sport == '5':
+                    if team.category == 'men':
+                        amount = 5000
+                    elif team.category == 'women':
+                        amount = 3000
+                elif sport == '6':
+                    if team.category == 'men':
+                        amount = 1500
+                    elif team.category == 'women':
+                        amount = 1200
+                elif sport == '7':
+                    if team.category == 'men':
+                        amount = 1200
+                elif sport == '8':
+                    if team.category == 'men':
+                        amount = 3500
+                    elif team.category == 'women':
+                        amount = 2500
+                elif sport == '9':
+                    if team.category == 'men':
+                        amount = 3500
+                elif sport == '10':
+                    if team.category == 'men':
+                        amount = 3500
+                elif sport == '11':
+                    amount = 500
+                elif sport == '12':
+                    amount = 200
+                elif sport == '13':
+                    amount = 99
+                elif sport == '14':
+                    amount = 499
+                elif sport == '15':
+                    amount = 99
 
-        return Response({"message":amount},status=status.HTTP_200_OK)
+                total_amount += amount
+
+            userprofile.amount_required = total_amount
+            userprofile.save()
+
+            return Response({"message": total_amount}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Ask your captian to complete the payment.If already one Please ignore."}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({"message": "You have to first register in a team."}, status=status.HTTP_400_BAD_REQUEST)
+
   
         
