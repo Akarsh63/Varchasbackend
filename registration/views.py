@@ -42,7 +42,6 @@ def CreateTeamView(request):
         "category": request.data['category'],
         "teamsize": request.data['teamsize'],
     }
-    print(requested_data)
     serializer = TeamsSerializer(data=requested_data)
     if serializer.is_valid():
         category = serializer.validated_data['category']
@@ -63,7 +62,6 @@ def CreateTeamView(request):
                 teamcount=1,
                 teams=team_name
             )
-            print(team)
             user_profile.teamId.add(team)
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize
