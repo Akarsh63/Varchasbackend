@@ -63,6 +63,7 @@ def CreateTeamView(request):
                 teamcount=1,
                 teams=team_name
             )
+            
             user_profile.teamId.add(team)
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize
