@@ -129,10 +129,6 @@ def payment(request):
             userprofile.save()
 
             return Response({"message": f"Total amount is: {total_amount}"}, status=status.HTTP_200_OK)
-<<<<<<< HEAD
-
-=======
->>>>>>> 51f092af6abbd3d1127e13bdff0f86bdf9518ad9
         else:
             return Response({"message": "Ask your captian to complete the payment.If already one Please ignore."}, status=status.HTTP_400_BAD_REQUEST)
     else:
