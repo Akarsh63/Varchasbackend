@@ -94,8 +94,8 @@ class CustomLoginView(LoginView):
     def get_redirect_url(self):
         if self.request.user.is_superuser:
             return reverse('adminportal:dashboard')
-        else:
-            return reverse('main:home')
+        # else:
+        #     return reverse('main:home')
 
 class PasswordReset(APIView):
     def post(self,request):

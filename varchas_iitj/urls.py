@@ -27,7 +27,7 @@ urlpatterns = [
     path('webd', admin.site.urls, name='admin'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
-    path('admin/', include('adminportal.urls')),
+    # path('admin/', include('adminportal.urls')),
     path('', include('main.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('account/', include('accounts.urls')),

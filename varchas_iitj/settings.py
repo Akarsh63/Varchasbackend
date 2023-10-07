@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
-    'adminportal.apps.AdminportalConfig',
+    'adminportal',
     'main.apps.MainConfig',
     'registration.apps.RegistrationConfig',
     'sponsors.apps.SponsorsConfig',
