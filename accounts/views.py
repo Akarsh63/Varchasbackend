@@ -178,16 +178,13 @@ def userleaveTeam(request):
     team.delete()
     return Response({"message": "You have left the team successfully."}, status=status.HTTP_200_OK)
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def userjoinTeam(request):
     user = request.user
     teamId = request.data.get('teamId')
-    print(teamId)
     if user is not None:
         user = get_object_or_404(UserProfile, user=user)
-        
         team = get_object_or_404(TeamRegistration, teamId=teamId)
         sport = team.sport
         sport_info = int(sport) 
@@ -212,9 +209,6 @@ def userjoinTeam(request):
         #     return Response({"message":"Sorry,Gender not matched!"},status=status.HTTP_406_NOT_ACCEPTABLE)
         
         team = get_object_or_404(TeamRegistration, teamId=teamId)
-        print(team.teamcount)
-        print(team.teamsize)
-        print(team)
         if(int(team.teamcount) < int(team.teamsize)):
             user.teamId.add(team)
             user.save()

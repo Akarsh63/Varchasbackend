@@ -31,15 +31,13 @@ def dashboardTeams(request, sport=0):
     if request.method == 'POST':
         sport = request.POST.get('sport')
     if sport == 0 or sport == '0':
-        teams = TeamRegistration.objects.all().order_by('-captian__user__date_joined')
-    elif sport == '11':
-        teams = TeamRegistration.objects.all().exclude(college__iexact='IITJ').exclude(
-            college__iexact='IIT Jodhpur').order_by('-captian__user__date_joined')
+        teams = TeamRegistration.objects.all()
     else:
         teams = TeamRegistration.objects.filter(sport=sport).order_by('-captian__user__date_joined')
     users = UserProfile.objects.all()
-    sports = ['All', 'Athletics', 'Badminton', 'Basketball', 'Chess', 'Cricket', 'Football',
-              'Table Tenis', 'Tenis', 'Volleyball', 'Badminton-mixed doubles', 'Exclude IITJ']
+    sports = ['All', 'Athletics', 'Badminton', 'Basketball', 'Cricket', 'Football',
+              'Table Tenis', 'Lawn Tenis', 'Volleyball','Kabaddi','Hockey','Squash',
+              'Chess','BGMI','Valorant','Clash Royale']
     members = {}
     for team in teams:
         member = []
