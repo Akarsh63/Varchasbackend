@@ -23,7 +23,6 @@ def dashboard(request):
     context = {'user': request.user, 'nteams': nteams, 'nusers': nusers}
     return render(request, 'adminportal/dashboard.html', context)
 
-
 @login_required(login_url='login')
 def dashboardTeams(request, sport=0):
     if not request.user.is_superuser:
@@ -52,14 +51,12 @@ def updateScore(request, sport=0):
     if not request.user.is_superuser:
         return render(request, "404")
     if sport == 0 or sport == '0':
-        teams = TeamRegistration.objects.all().order_by('-captian__user__date_joined')
-    elif sport == '11':
-        teams = TeamRegistration.objects.all().exclude(college__iexact='IITJ').exclude(
-            college__iexact='IIT Jodhpur').order_by('-captian__user__date_joined')
+        teams = TeamRegistration.objects.all()
     else:
-        teams = TeamRegistration.objects.filter(sport=sport).order_by('-captian__user__date_joined')
-    sports = ['All', 'Athletics', 'Badminton', 'Basketball', 'Chess', 'Cricket', 'Football',
-              'Table Tenis', 'Tenis', 'Volleyball', 'Badminton-mixed doubles', 'Exclude IITJ']
+        teams = TeamRegistration.objects.filter(sport=sport)
+    sports = ['All', 'Athletics', 'Badminton', 'Basketball', 'Cricket', 'Football',
+              'Table Tennis', 'Lawn Tennis', 'Volleyball', 'Kabaddi', 'Hockey', 'Squash',
+              'Chess', 'BGMI', 'Valorant', 'Clash Royale']
     if request.method == 'POST':
         teamId = request.POST.get('teamId')
         team = TeamRegistration.objects.get(teamId=teamId)
@@ -116,7 +113,6 @@ def dashboardUsers(request):
     users = UserProfile.objects.all().order_by('-user__date_joined')
     return render(request, 'adminportal/dashboardUsers.html', {'users': users})
 
-
 @login_required(login_url='login')
 def downloadExcel(request):
     response = HttpResponse(content_type='application/ms-excel')
@@ -127,7 +123,7 @@ def downloadExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['TeamID', 'Sport', 'Subevent', 'Captain', 'Captain no.', 'College', 'Members', 'Created on']
+    columns = ['TeamID', 'Sport', 'Category','Sub Event', 'Captain', 'Captain no.', 'College','Members']
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
     font_style = xlwt.XFStyle()
@@ -135,25 +131,27 @@ def downloadExcel(request):
     users = UserProfile.objects.all()
     for team in teams:
         if team.captian != None:
-            members = []
+            team_members = []
             for user in users:
-                if user.teamId == team:
-                    members.append(user.user.first_name)
+                if user.teamId.filter(teamId=team.teamId).exists():
+                    team_members.append(user.user.first_name)
+            team_members_str = ', '.join(team_members) if team_members else ""
+            members = team_members_str
             row_num = row_num + 1
             ws.write(row_num, 0, team.teamId, font_style)
             ws.write(row_num, 1, team.get_sport_display(), font_style)
-            ws.write(row_num, 2, team.subevents, font_style)
-            ws.write(row_num, 3, team.captian.user.first_name, font_style)
-            ws.write(row_num, 4, team.captian.phone, font_style)
-            ws.write(row_num, 5, team.college, font_style)
-            ws.write(row_num, 6, ", ".join(members), font_style)
-            ws.write(row_num, 7, str(team.captian.user.date_joined)[:11])
+            ws.write(row_num, 2, team.category, font_style)
+            ws.write(row_num, 3, team.teams, font_style)
+            ws.write(row_num, 4, team.captian.user.first_name, font_style)
+            ws.write(row_num, 5, team.captian.phone, font_style)
+            ws.write(row_num, 6, team.college, font_style)
+            ws.write(row_num, 7, members, font_style)
 
     ws = wb.add_sheet("Users")
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Email', 'Name', 'Phone Number', 'Gender', 'College', 'teamId', 'Date Joined', 'Accomodation']
+    columns = ['Email', 'Name', 'Phone Number', 'Gender', 'College', 'teamId', 'Accomodation']
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
     font_style = xlwt.XFStyle()
@@ -165,10 +163,10 @@ def downloadExcel(request):
         ws.write(row_num, 2, user.phone, font_style)
         ws.write(row_num, 3, user.gender, font_style)
         ws.write(row_num, 4, user.college, font_style)
-        ws.write(row_num, 5, user.teamId.teamId if user.teamId != None else "", font_style)
-        ws.write(row_num, 6, str(user.user.date_joined)[:11])
+        team_ids = [team.teamId for team in user.teamId.all()] if user.teamId.exists() else []
+        team_ids_str = ', '.join(team_ids) if team_ids else ""
+        ws.write(row_num, 5, team_ids_str, font_style)
         ws.write(row_num, 7, user.accommodation_required, font_style)
-
     wb.save(response)
     return response
 

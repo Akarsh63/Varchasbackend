@@ -7,4 +7,6 @@ urlpatterns = [
     path('mainapi/', OurTeamViewSet.as_view(), name='teams'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', IndexView.as_view(), name='home'),
+    # path('', include('adminportal.urls')),
 ]
+
