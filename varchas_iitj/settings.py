@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  "https://www.varchas23.in"
+    "http://localhost:3000",  "https://www.varchas23.in","http://localhost:3002",
 ]
 
 ROOT_URLCONF = 'varchas_iitj.urls'

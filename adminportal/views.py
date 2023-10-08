@@ -170,6 +170,25 @@ def downloadExcel(request):
     wb.save(response)
     return response
 
+@login_required(login_url='login')
+def teaminfo(request):
+    if not request.user.is_superuser:
+        return render(request, "404")    
+    if request.method == 'POST':
+        teamId = request.POST.get('teamId')
+        try:
+          team = TeamRegistration.objects.get(teamId=teamId)
+          code = int(team.sport) == 13 or int(team.sport) == 14 or int(team.sport) == 15
+          sport = None
+          for choice in team.SPORT_CHOICES:
+             if choice[0] == team.sport:
+                sport = choice[1]
+                break
+        except:
+             return render(request,"adminportal/teaminfo.html",{"msg":"Please enter a valid teamId!"})
+        users=UserProfile.objects.filter(teamId__teamId=teamId)
+        return render(request,"adminportal/teaminfo.html",{"team":team,"users":users,"code":code,"sport":sport})
+    return render(request,"adminportal/teaminfo.html")
 
 # @login_required(login_url='login')
 # def downloadEsportsExcel(request):
