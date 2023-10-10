@@ -22,6 +22,8 @@ def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
     sport = request.data['sport']
+    if sport is None or sport == '':
+        return Response({"message": "Sport field is required"}, status=status.HTTP_400_BAD_REQUEST)
     sport_info = int(sport)
     if user_profile.teamId.exists():
         if sport_info in [1,2,3,4,5,6,7,8,9,10,11,12] :
