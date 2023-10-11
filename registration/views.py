@@ -71,15 +71,16 @@ def CreateTeamView(request):
             event_name = f"{TeamRegistration.SPORT_CHOICES[int(sport) - 1][1]} {team_name}"
             participant_name = user1.first_name
             team_id = team_id
-            message = f"Hi {participant_name},\n\n" \
-                      f"This is a confirmation email regarding your successful registration for {event_name}.\n\n" \
-                      f"Name of participant: {participant_name}\n" \
-                      f"Event: {event_name}\n" \
-                      f"Team Id: {team_id}\n\n" \
-                      f"Thank you for being part of Varchas'23\n\n" \
-                      "Team Varchas'23\n" \
-                      "IIT Jodhpur\n\n" \
-                      "Don't reply to this email. For any queries contact Varchas'23 team or visit varchas23.in"
+            message = f"Hi {participant_name},<br><br>" \
+                      f"This is a confirmation email regarding your successful registration for {event_name}.<br><br>" \
+                      f"<b>Name of participant: {participant_name}</b><br>" \
+                      f"<b>Event: {event_name}</b><br>" \
+                      f"<b>Team Id: {team_id}</b><br><br>" \
+                      "<font color='grey'>Don't reply to this email. For any queries contact Varchas'23 team or visit varchas23.in</font><br>" \
+                      "Thank you for being part of Varchas'23<br><br>" \
+                      "<font color='grey'><i>Thanks and Regards</i><br>" \
+                      "<i>Festival Chiefs Varchas'23<br>" \
+                      "IIT Jodhpur</i></font>"
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user1.email,]
             try:
