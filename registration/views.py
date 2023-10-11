@@ -98,7 +98,7 @@ def CreateTeamView(request):
                 connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
                 connection.starttls()  # Use TLS
                 connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                connection.sendmail(email_from, recipient_list, f'Subject: {subject}\n\n{message}')
+                connection.sendmail(email_from, recipient_list,f'Subject: {subject}\nContent-Type: text/html; charset=utf-8\n\n{message}')
                 connection.quit()
                 print("Email sent successfully")
             except Exception as e:
