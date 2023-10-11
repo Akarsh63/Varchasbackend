@@ -69,8 +69,8 @@ def CreateTeamView(request):
             user1=request.user
             subject='Varchas23 | Confirmation of Team registration'
             event_name = f"{TeamRegistration.SPORT_CHOICES[int(sport) - 1][1]} {team_name}"
-            participant_name = {user1.first_name}
-            team_id = {team_id}
+            participant_name = user1.first_name
+            team_id = team_id
             message = f"Hi {participant_name},\n\n" \
                       f"This is a confirmation email regarding your successful registration for {event_name}.\n\n" \
                       f"Name of participant: {participant_name}\n" \
