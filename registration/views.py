@@ -76,11 +76,11 @@ def CreateTeamView(request):
                       f"<b>Name of participant: {participant_name}</b><br>" \
                       f"<b>Event: {event_name}</b><br>" \
                       f"<b>Team Id: {team_id}</b><br><br>" \
-                      "<font color='grey'>Don't reply to this email. For any queries contact Varchas'23 team or visit varchas23.in</font><br>" \
-                      "Thank you for being part of Varchas'23<br><br>" \
-                      "<font color='grey'><i>Thanks and Regards</i><br>" \
-                      "<i>Festival Chiefs Varchas'23<br>" \
-                      "IIT Jodhpur</i></font>"
+                      f"<font color='grey'>Don't reply to this email. For any queries contact Varchas'23 team or visit varchas23.in</font><br>" \
+                      f"Thank you for being part of Varchas'23<br><br>" \
+                      f"<font color='grey'><i>Thanks and Regards</i><br>" \
+                      f"<i>Festival Chiefs Varchas'23<br>" \
+                      f"IIT Jodhpur</i></font>"
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user1.email,]
             try:
