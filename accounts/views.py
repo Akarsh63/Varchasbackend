@@ -114,7 +114,7 @@ class PasswordReset(APIView):
             reset_request.save()
          subject='Varchas23 | OTP Verification'
          message = f'Hi {user.username}, Here is your otp {otp}.'
-         email_from = 'varchas2023iitj@gmail.com'
+         email_from=settings.EMAIL_HOST_USER
          recipient_list = [user.email, ]
          try:
             connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
@@ -162,13 +162,20 @@ def resendpassword(request):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [user.email, ]
     try:
+        print(1)
         connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+        print(2)
         connection.starttls()  # Use TLS
+        print(3)
         connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+        print(4)
         connection.sendmail(email_from, recipient_list, f'Subject: {subject}\n\n{message}')
+        print(5)
         connection.quit()
+        print(6)
         print("Email sent successfully")
     except Exception as e:
+        print(7)
         print(f"Email could not be sent. Error: {str(e)}")
     return Response({"message":"OTP sent Successfully!"},status=status.HTTP_201_CREATED) 
 
