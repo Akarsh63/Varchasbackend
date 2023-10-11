@@ -80,11 +80,11 @@ def CreateTeamView(request):
                             <div class="container">
                                 <div class="content">
                                     <p>Hi {participant_name},</p>
-                                    <p>This is a confirmation email regarding your successful registration for {event_name}.</p><br>
+                                    <p>This is a confirmation email regarding your successful registration for {event_name}.</p>
                                     <p><b>Name of participant: {participant_name}</b></p>
                                     <p><b>Event: {event_name}</b></p>
                                     <p><b>Team Id: {team_id}</b></p>
-                                    <p><i>Don't reply to this email. For any queries, contact Varchas'23 team or visit <a href="https://varchas23.in">varchas23.in</a></i></p>
+                                    <p style="color:grey">Don't reply to this email. For any queries, contact Varchas'23 team or visit <a href="https://varchas23.in">varchas23.in</a></p>
                                     <p>Thank you for being part of Varchas'23</p>
                                     <p style="color:grey"><b><i>Thanks and Regards,<br>Festival Chiefs Varchas'23<br>IIT Jodhpur</i></b></p>
                                 </div>
