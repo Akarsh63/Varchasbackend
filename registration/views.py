@@ -71,7 +71,15 @@ def CreateTeamView(request):
             message = f'Hi {user1.first_name}, Thank you for being part of Varchas23 . The TeamId of {TeamRegistration.SPORT_CHOICES[int(sport)-1][1]} {team_name} is {team_id}.'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user1.email,]
-            # send_mail( subject, message, email_from, recipient_list )
+            try:
+                connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                connection.starttls()  # Use TLS
+                connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                connection.sendmail(email_from, recipient_list, f'Subject: {subject}\n\n{message}')
+                connection.quit()
+                print("Email sent successfully")
+            except Exception as e:
+                print(f"Email could not be sent. Error: {str(e)}")
             user_profile.teamId.add(team)
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize
