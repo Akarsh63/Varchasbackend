@@ -71,16 +71,27 @@ def CreateTeamView(request):
             event_name = f"{TeamRegistration.SPORT_CHOICES[int(sport) - 1][1]} {team_name}"
             participant_name = user1.first_name
             team_id = team_id
-            message = f"Hi {participant_name},<br><br>" \
-                      f"This is a confirmation email regarding your successful registration for {event_name}.<br><br>" \
-                      f"<b>Name of participant: {participant_name}</b><br>" \
-                      f"<b>Event: {event_name}</b><br>" \
-                      f"<b>Team Id: {team_id}</b><br><br>" \
-                      f"<font color='grey'>Don't reply to this email. For any queries contact Varchas'23 team or visit varchas23.in</font><br>" \
-                      f"Thank you for being part of Varchas'23<br><br>" \
-                      f"<font color='grey'><i>Thanks and Regards</i><br>" \
-                      f"<i>Festival Chiefs Varchas'23<br>" \
-                      f"IIT Jodhpur</i></font>"
+            message = f"""
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="content">
+                                    <p>Hi {participant_name},</p>
+                                    <p>This is a confirmation email regarding your successful registration for {event_name}.</p><br>
+                                    <p><b>Name of participant: {participant_name}</b></p>
+                                    <p><b>Event: {event_name}</b></p>
+                                    <p><b>Team Id: {team_id}</b></p>
+                                    <p><i>Don't reply to this email. For any queries, contact Varchas'23 team or visit <a href="https://varchas23.in">varchas23.in</a></i></p>
+                                    <p>Thank you for being part of Varchas'23</p>
+                                    <p style="color:grey"><b><i>Thanks and Regards,<br>Festival Chiefs Varchas'23<br>IIT Jodhpur</i></b></p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                        """
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user1.email,]
             try:
