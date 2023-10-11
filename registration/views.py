@@ -68,7 +68,18 @@ def CreateTeamView(request):
             )
             user1=request.user
             subject='Varchas23 | Confirmation of Team registration'
-            message = f'Hi {user1.first_name}, Thank you for being part of Varchas23 . The TeamId of {TeamRegistration.SPORT_CHOICES[int(sport)-1][1]} {team_name} is {team_id}.'
+            event_name = {TeamRegistration.SPORT_CHOICES[int(sport)-1][1]} {team_name}
+            participant_name = {user1.first_name}
+            team_id = {team_id}
+            message = f"Hi {participant_name},\n\n" \
+                      f"This is a confirmation email regarding your successful registration for {event_name}.\n\n" \
+                      f"Name of participant: {participant_name}\n" \
+                      f"Event: {event_name}\n" \
+                      f"Team Id: {team_id}\n\n" \
+                      f"Thank you for being part of Varchas'23\n\n" \
+                      "Team Varchas'23\n" \
+                      "IIT Jodhpur\n\n" \
+                      "Don't reply to this email. For any queries contact Varchas'23 team or visit varchas23.in"
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user1.email,]
             try:
