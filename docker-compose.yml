@@ -1,14 +1,13 @@
 version: "3"
 services:
-  django:
-    smtp-server:
+  mailhog:
     image: mailhog/mailhog
-    expose:
-      - 1025
-      - 8025
     ports:
-      - '1025:1025'
-      - '8025:8025'
+      - 1025:1025
+      - 8025:8025
+    environment:
+      - DEV_ENV=true
+  django:
     build:
       context: .
       dockerfile: Dockerfile
