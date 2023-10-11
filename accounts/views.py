@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
+import smtplib
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
@@ -115,7 +116,15 @@ class PasswordReset(APIView):
          message = f'Hi {user.username}, Here is your otp {otp}.'
          email_from = 'varchas2023iitj@gmail.com'
          recipient_list = [user.email, ]
-         send_mail( subject, message, email_from, recipient_list )
+         try:
+            connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            connection.starttls()  # Use TLS
+            connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            connection.sendmail(email_from, recipient_list, f'Subject: {subject}\n\n{message}')
+            connection.quit()
+            print("Email sent successfully")
+         except Exception as e:
+            print(f"Email could not be sent. Error: {str(e)}")
          return Response({"message":"OTP sent Successfully!"},status=status.HTTP_201_CREATED)         
 
 class OTPVerification(APIView):
