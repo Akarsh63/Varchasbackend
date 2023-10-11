@@ -113,7 +113,7 @@ class PasswordReset(APIView):
             reset_request.save()
          subject='Varchas23 | OTP Verification'
          message = f'Hi {user.username}, Here is your otp {otp}.'
-         email_from = settings.EMAIL_HOST_USER
+         email_from = 'varchas2023iitj@gmail.com'
          recipient_list = [user.email, ]
          send_mail( subject, message, email_from, recipient_list )
          return Response({"message":"OTP sent Successfully!"},status=status.HTTP_201_CREATED)         
