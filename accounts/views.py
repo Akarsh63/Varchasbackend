@@ -290,7 +290,9 @@ def userDisplayteam(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def userDisplayProfile(request):
+    print(1)
     user = get_object_or_404(UserProfile, user=request.user)
+    print(user)
     if user is None:
         return Response({"message":"User not found!"},status=status.HTTP_404_NOT_FOUND)
     response_data = {
