@@ -38,10 +38,10 @@ class RegisterUserView(APIView):
             "password": hashed_password,
         }
         user_serializer = UserSerializer(data=user_data)
+        if len(request.data['phone']) > 10:
+                return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
         if user_serializer.is_valid():
             user = user_serializer.save()
-            if len(request.data['phone']) > 10:
-                return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
             profile_data = {
                 "user": user.id,
                 "phone": request.data["phone"],
