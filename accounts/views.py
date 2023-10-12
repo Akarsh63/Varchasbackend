@@ -292,11 +292,10 @@ def userDisplayteam(request):
 def userDisplayProfile(request):
     print(1)
     print(request)
-    try{
+    try:
        user = get_object_or_404(UserProfile, user=request.user)
-    }
-    else{
-         return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)}
+    except UserProfile.DoesNotExist:
+        return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     print(user)
     if user is None:
         return Response({"message":"User not found!"},status=status.HTTP_404_NOT_FOUND)
