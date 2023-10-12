@@ -291,7 +291,7 @@ def userDisplayteam(request):
 @permission_classes([IsAuthenticated])
 def userDisplayProfile(request):
     print(1)
-    print(request)
+    print(request.user)
     try:
        user = get_object_or_404(UserProfile, user=request.user)
     except UserProfile.DoesNotExist:
