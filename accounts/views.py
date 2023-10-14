@@ -328,13 +328,11 @@ def noprofile(request):
 
 @api_view(['DELETE'])
 def deleteusers(request):
-    data = request.data.get("users", []) 
-    for username in data:
-        try:
-            user_to_delete = User.objects.get(username=username)
-            user_to_delete.delete()
-        except User.DoesNotExist:
-            pass 
+    users_without_profile = User.objects.filter(userprofile__isnull=True)
+    
+    for user in users_without_profile:
+        user.delete()
+    
     return Response("Operation completed", status=status.HTTP_200_OK)
 
 class UserViewSet(viewsets.ModelViewSet):
