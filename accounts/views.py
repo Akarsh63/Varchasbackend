@@ -323,8 +323,10 @@ def noprofile(request):
             userprof = UserProfile.objects.get(user=user)
         except UserProfile.DoesNotExist:
             data.append(user)
+    const message={"users": users, "profiles": userprofiles, "userswithnoprofile": data}
+    print(message)
     
-    return Response({"users": users, "profiles": userprofiles, "userswithnoprofile": data}, status=status.HTTP_200_OK)
+    return Response(message, status=status.HTTP_200_OK)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
