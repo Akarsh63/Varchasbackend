@@ -312,18 +312,20 @@ def userDisplayProfile(request):
          }
     return Response(response_data, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def noprofile(request):
-    const users=User.objects.all()
-    const userprofiles=UserProfile.objects.all()
-    data=[]
-    for user in user:
+    users = User.objects.all()
+    userprofiles = UserProfile.objects.all()
+    data = []
+    
+    for user in users:  # Change "for user in user" to "for user in users"
         try:
-            userprof=UserProfile.objects.get(user=user)
+            userprof = UserProfile.objects.get(user=user)
         except UserProfile.DoesNotExist:
-           data.append(user)
-    return Response({"users":users,"profiles":userprofiles,"userswithnoprofile":data},status=status.HTTP_200_OK)
-        
+            data.append(user)
+    
+    return Response({"users": users, "profiles": userprofiles, "userswithnoprofile": data}, status=status.HTTP_200_OK)
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
