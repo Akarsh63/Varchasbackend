@@ -322,8 +322,8 @@ def noprofile(request):
         try:
             userprof = UserProfile.objects.get(user=user)
         except UserProfile.DoesNotExist:
-            data.append(user)
-    message={"users": users, "profiles": userprofiles, "userswithnoprofile": data}
+            data.append(user.username)
+    message={"users": users.count(), "profiles": userprofiles.count(), "userswithnoprofile": data,"count":len(data)}
     print(message)
     
     return Response(message, status=status.HTTP_200_OK)
