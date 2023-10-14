@@ -328,7 +328,7 @@ def noprofile(request):
 
 @api_view(['DELETE'])
 def deleteusers(request):
-    data=request.data.users
+    data=request.data.get('users')
     for user in data:
         if User.objects.get(username=user) :
             deleteuser=User.objects.get(username=user)
