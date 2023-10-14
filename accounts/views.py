@@ -318,7 +318,7 @@ def noprofile(request):
     userprofiles = UserProfile.objects.all()
     data = []
     
-    for user in users:  # Change "for user in user" to "for user in users"
+    for user in users:  
         try:
             userprof = UserProfile.objects.get(user=user)
         except UserProfile.DoesNotExist:
