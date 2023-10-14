@@ -59,9 +59,9 @@ class RegisterUserView(APIView):
                 return Response({"message": 'User created Successfully'}, status=status.HTTP_201_CREATED)
             else:
                 user.delete()
-                return Response({"message":profile_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"Error":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"message":user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Error":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
 
 
     def get(self, request):
