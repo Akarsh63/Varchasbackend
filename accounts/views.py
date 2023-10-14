@@ -24,6 +24,9 @@ from django.contrib.auth.hashers import make_password
 
 class RegisterUserView(APIView):
     def post(self, request):
+        if len(request.data.get('phone', '')) != 10:
+            return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
+    
         user1 = User.objects.filter(email=request.data.get('email')).first()
         if user1:
             return Response({"Error": "Email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
@@ -38,8 +41,6 @@ class RegisterUserView(APIView):
             "password": hashed_password,
         }
         user_serializer = UserSerializer(data=user_data)
-        if len(request.data['phone']) > 10:
-                return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
         if user_serializer.is_valid():
             user = user_serializer.save()
             profile_data = {
@@ -50,16 +51,17 @@ class RegisterUserView(APIView):
                 "state": request.data["state"],
                 "accommodation_required": request.data["accommodation_required"],
             }
-
+    
             profile_serializer = UserProfileSerializer(data=profile_data)
             if profile_serializer.is_valid():
                 profile_serializer.save()
-                return Response({"message":'User created Successfully'}, status=status.HTTP_201_CREATED)
+                return Response({"message": 'User created Successfully'}, status=status.HTTP_201_CREATED)
             else:
-                user.delete() 
+                user.delete()
                 return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get(self, request):
         user_profiles = UserProfile.objects.all()
