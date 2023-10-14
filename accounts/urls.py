@@ -1,7 +1,7 @@
 from .views import UserViewSet, GroupViewSet
 from django.urls import path, include
 from rest_framework import routers
-from .views import LoginUserView,RegisterUserView,userleaveTeam,userjoinTeam,userDisplayteam,userDisplayProfile,PasswordReset,OTPVerification,restpassword,resendpassword,noprofile
+from .views import LoginUserView,RegisterUserView,userleaveTeam,userjoinTeam,userDisplayteam,userDisplayProfile,PasswordReset,OTPVerification,restpassword,resendpassword,noprofile,deleteusers
 app_name = 'accounts'
 
 router = routers.DefaultRouter()
@@ -22,4 +22,5 @@ urlpatterns = [
     path('reset_password/',restpassword,name='restpassword'),
     path('resendpassword/',resendpassword,name='resendpassword'),
     path('noprofile/',noprofile,name='noprofile'),
+    path('deleteusers/',deleteusers,name='deleteusers'),
 ]
