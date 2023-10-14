@@ -324,9 +324,16 @@ def noprofile(request):
         except UserProfile.DoesNotExist:
             data.append(user.username)
     message={"users": users.count(), "profiles": userprofiles.count(), "userswithnoprofile": data,"count":len(data)}
-    print(message)
-    
     return Response(message, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def deleteusers(request):
+    data=request.data.users
+    for user in data:
+        if User.objects.get(username=user) :
+            deleteuser=User.objects.get(username=user)
+            deleteuser.delete()
+    return Response("Operation cmpleted",status=status.HTTP_200_OK)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
