@@ -24,7 +24,7 @@ from django.contrib.auth.hashers import make_password
 
 class RegisterUserView(APIView):
     def post(self, request):
-        print(request.data.get('phone'))
+        print(request.data)
         if len(request.data.get('phone')) != 10:
             return Response({"message": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
     
