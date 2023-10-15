@@ -12,6 +12,7 @@ services:
       # - DB_HOST=postgresqldb
       - CHOKIDAR_USEPOLLING=true
       - EMAIL_USE_TLS=True
+      - EMAIL_HOST_PASSWORD=jnsbwcyuhstzrmnp
     ports:
       - 8888:8888
     volumes:

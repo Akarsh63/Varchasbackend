@@ -1,4 +1,4 @@
-
+import smtplib
 from django.shortcuts import get_object_or_404
 from accounts.models import UserProfile
 from .models import TeamRegistration
@@ -22,14 +22,15 @@ def CreateTeamView(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
     sport = request.data['sport']
-    print(sport)
+    if sport is None or sport == '':
+        return Response({"message": "Sport field is required"}, status=status.HTTP_400_BAD_REQUEST)
     sport_info = int(sport)
     if user_profile.teamId.exists():
         if sport_info in [1,2,3,4,5,6,7,8,9,10,11,12] :
             teams=user_profile.teamId.all()
             for team in teams:
                 if int(team.sport) in [1,2,3,4,5,6,7,8,9,10,11,12] :
-                    message = "You are not able to that team"
+                    message = "You are not able to create the team. \nOnly one team can be created per user. \nYou can join team cerated by your team captain"
                     message += "\nYou have to register again to join another team. \nContact Varchas administrators."
                     return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
     
@@ -37,7 +38,7 @@ def CreateTeamView(request):
             teams=user_profile.teamId.all()
             for team in teams:
                 if int(team.sport) == sport_info :
-                    message = "You are not able to that team"
+                    message = "You are not able to create the team. \nOnly one team can be created per user. \nYou can join team cerated by your team captain"
                     message += "\nYou have to register again to join another team. \nContact Varchas administrators."
                     return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
     requested_data = {
@@ -67,10 +68,41 @@ def CreateTeamView(request):
             )
             user1=request.user
             subject='Varchas23 | Confirmation of Team registration'
-            message = f'Hi {user1.first_name}, Thank you for being part of Varchas23 . The TeamId of {TeamRegistration.SPORT_CHOICES[int(sport)-1][1]} {team_name} is {team_id}.'
+            event_name = f"{TeamRegistration.SPORT_CHOICES[int(sport) - 1][1]} {team_name}"
+            participant_name = user1.first_name
+            team_id = team_id
+            message = f"""
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="content">
+                                    <p>Hi {participant_name},</p>
+                                    <p>This is a confirmation email regarding your successful registration for {event_name}.</p>
+                                    <p><b>Name of participant: {participant_name}</b></p>
+                                    <p><b>Event: {event_name}</b></p>
+                                    <p><b>Team Id: {team_id}</b></p>
+                                    <p style="color:grey">Don't reply to this email. For any queries, contact Varchas'23 team or visit <a href="https://varchas23.in">varchas23.in</a></p>
+                                    <p>Thank you for being part of Varchas'23</p>
+                                    <p style="color:grey"><b><i>Thanks and Regards,<br>Festival Chiefs Varchas'23<br>IIT Jodhpur</i></b></p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                        """
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [user1.email,]
-            # send_mail( subject, message, email_from, recipient_list )
+            # try:
+            #     connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            #     connection.starttls()  # Use TLS
+            #     connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            #     connection.sendmail(email_from, recipient_list,f'Subject: {subject}\nContent-Type: text/html; charset=utf-8\n\n{message}')
+            #     connection.quit()
+            #     print("Email sent successfully")
+            # except Exception as e:
+            #     print(f"Email could not be sent. Error: {str(e)}")
             user_profile.teamId.add(team)
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize

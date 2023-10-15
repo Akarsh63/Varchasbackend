@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
+import smtplib
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
@@ -113,9 +114,17 @@ class PasswordReset(APIView):
             reset_request.save()
          subject='Varchas23 | OTP Verification'
          message = f'Hi {user.username}, Here is your otp {otp}.'
-         email_from = settings.EMAIL_HOST_USER
+         email_from=settings.EMAIL_HOST_USER
          recipient_list = [user.email, ]
-         send_mail( subject, message, email_from, recipient_list )
+         try:
+            connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            connection.starttls()  # Use TLS
+            connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            connection.sendmail(email_from, recipient_list, f'Subject: {subject}\n\n{message}')
+            connection.quit()
+            print("Email sent successfully")
+         except Exception as e:
+            print(f"Email could not be sent. Error: {str(e)}")
          return Response({"message":"OTP sent Successfully!"},status=status.HTTP_201_CREATED)         
 
 class OTPVerification(APIView):
@@ -152,7 +161,22 @@ def resendpassword(request):
     message = f'Hi {user.username}, Here is your otp {otp}.'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [user.email, ]
-    send_mail( subject, message, email_from, recipient_list )
+    try:
+        print(1)
+        connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+        print(2)
+        connection.starttls()  # Use TLS
+        print(3)
+        connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+        print(4)
+        connection.sendmail(email_from, recipient_list, f'Subject: {subject}\n\n{message}')
+        print(5)
+        connection.quit()
+        print(6)
+        print("Email sent successfully")
+    except Exception as e:
+        print(7)
+        print(f"Email could not be sent. Error: {str(e)}")
     return Response({"message":"OTP sent Successfully!"},status=status.HTTP_201_CREATED) 
 
 @api_view(['POST'])
@@ -193,17 +217,17 @@ def userjoinTeam(request):
                 teams=user.teamId.all()
                 for team in teams:
                     if int(team.sport) in [1,2,3,4,5,6,7,8,9,10,11,12] :
-                        message = "You are not able to join this team"
-                        message += "\nYou have to register again to join another team. \nContact Varchas administrators."
-                        return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                            message = "You are not able to join the team. \nOnly one team can be joined per user."
+                            message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                            return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
         
             if sport_info in [13,14,15]:
                 teams=user.teamId.all()
                 for team in teams:
                     if int(team.sport) == sport_info :
-                        message = "You are not able to join this team"
-                        message += "\nYou have to register again to join another team. \nContact Varchas administrators."
-                        return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                         message = "You are not able to join the team. \nOnly one team can be joined per user."
+                         message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                         return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
         
         # if user.gender != team.captian.gender:
         #     return Response({"message":"Sorry,Gender not matched!"},status=status.HTTP_406_NOT_ACCEPTABLE)
