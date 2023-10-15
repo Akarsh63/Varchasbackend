@@ -24,11 +24,15 @@ from django.contrib.auth.hashers import make_password
 
 class RegisterUserView(APIView):
     def post(self, request):
+        print(request.data)
+        if len(request.data.get('phone')) != 10:
+            return Response({"message": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
+    
         user1 = User.objects.filter(email=request.data.get('email')).first()
         if user1:
-            return Response({"Error": "Email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
         if request.data.get('password') != request.data.get('confirm_password'):
-            return Response({"Error": "Passwords don't match!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Passwords don't match!"}, status=status.HTTP_400_BAD_REQUEST)
         hashed_password = make_password(request.data["password"])
         user_data = {
             "username": request.data["email"],
@@ -40,8 +44,6 @@ class RegisterUserView(APIView):
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
-            if len(request.data['phone']) > 10:
-                return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
             profile_data = {
                 "user": user.id,
                 "phone": request.data["phone"],
@@ -50,16 +52,17 @@ class RegisterUserView(APIView):
                 "state": request.data["state"],
                 "accommodation_required": request.data["accommodation_required"],
             }
-
+    
             profile_serializer = UserProfileSerializer(data=profile_data)
             if profile_serializer.is_valid():
                 profile_serializer.save()
-                return Response({"message":'User created Successfully'}, status=status.HTTP_201_CREATED)
+                return Response({"message": 'User created Successfully'}, status=status.HTTP_201_CREATED)
             else:
-                user.delete() 
-                return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                user.delete()
+                return Response({"message":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get(self, request):
         user_profiles = UserProfile.objects.all()
@@ -290,7 +293,13 @@ def userDisplayteam(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def userDisplayProfile(request):
-    user = get_object_or_404(UserProfile, user=request.user)
+    print(1)
+    print(request.user)
+    try:
+       user = get_object_or_404(UserProfile, user=request.user)
+    except UserProfile.DoesNotExist:
+        return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    print(user)
     if user is None:
         return Response({"message":"User not found!"},status=status.HTTP_404_NOT_FOUND)
     response_data = {
@@ -302,6 +311,31 @@ def userDisplayProfile(request):
                 "name":user.user.first_name +user.user.last_name
          }
     return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def noprofile(request):
+    users = User.objects.all()
+    userprofiles = UserProfile.objects.all()
+    data = []
+    
+    for user in users:  
+        try:
+            userprof = UserProfile.objects.get(user=user)
+        except UserProfile.DoesNotExist:
+            data.append(user.username)
+    message={"users": users.count(), "profiles": userprofiles.count(), "userswithnoprofile": data,"count":len(data)}
+    return Response(message, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def deleteusers(request):
+    data = request.data.get("users", []) 
+    for username in data:
+        try:
+            user_to_delete = User.objects.get(username=username)
+            user_to_delete.delete()
+        except User.DoesNotExist:
+             pass 
+    return Response("Operation completed", status=status.HTTP_200_OK)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
