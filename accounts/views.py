@@ -26,13 +26,13 @@ class RegisterUserView(APIView):
     def post(self, request):
         print(request.data.get('phone'))
         if len(request.data.get('phone')) != 10:
-            return Response({"Error": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Phone number must be 10 digits"}, status=status.HTTP_400_BAD_REQUEST)
     
         user1 = User.objects.filter(email=request.data.get('email')).first()
         if user1:
-            return Response({"Error": "Email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Email already exists!"}, status=status.HTTP_400_BAD_REQUEST)
         if request.data.get('password') != request.data.get('confirm_password'):
-            return Response({"Error": "Passwords don't match!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Passwords don't match!"}, status=status.HTTP_400_BAD_REQUEST)
         hashed_password = make_password(request.data["password"])
         user_data = {
             "username": request.data["email"],
@@ -59,9 +59,9 @@ class RegisterUserView(APIView):
                 return Response({"message": 'User created Successfully'}, status=status.HTTP_201_CREATED)
             else:
                 user.delete()
-                return Response({"Error":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"Error":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message":"Sorry, Please try again!"}, status=status.HTTP_400_BAD_REQUEST)
 
 
     def get(self, request):
