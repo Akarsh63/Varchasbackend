@@ -126,7 +126,7 @@ def downloadExcel(request):
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
-    teams = TeamRegistration.objects.all().order_by('-captain__user__date_joined')
+    teams = TeamRegistration.objects.all()
     users = UserProfile.objects.all()
 
     for team in teams:
