@@ -142,8 +142,8 @@ def downloadExcel(request):
             ws.write(row_num, 1, team.get_sport_display(), font_style)
             ws.write(row_num, 2, team.category, font_style)
             ws.write(row_num, 3, team.teams, font_style)  # Fix the field name here
-            ws.write(row_num, 4, team.captain.user.first_name, font_style)
-            ws.write(row_num, 5, team.captain.phone, font_style)
+            ws.write(row_num, 4, team.captian.user.first_name, font_style)
+            ws.write(row_num, 5, team.captian.phone, font_style)
             ws.write(row_num, 6, team.college, font_style)
             ws.write(row_num, 7, members, font_style)
 
