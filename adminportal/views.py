@@ -130,7 +130,7 @@ def downloadExcel(request):
     users = UserProfile.objects.all()
 
     for team in teams:
-        if team.captain is not None:  # Fix for captain not equal to None
+        if team.captian is not None:  # Fix for captain not equal to None
             team_members = []
             for user in users:
                 if user.teamId.filter(teamId=team.teamId).exists():
@@ -151,11 +151,11 @@ def downloadExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Email', 'Name', 'Phone Number', 'Gender', 'College', 'teamId', 'Accommodation']  # Fix column name here
+    columns = ['Email', 'Name', 'Phone Number', 'Gender', 'College', 'teamId', 'Accommodation']  
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
-    users = UserProfile.objects.all().order_by('-user__date_joined')
+    users = UserProfile.objects.all()
 
     for user in users:
         row_num += 1
@@ -167,7 +167,7 @@ def downloadExcel(request):
         team_ids = [team.teamId for team in user.teamId.all()] if user.teamId.exists() else []
         team_ids_str = ', '.join(team_ids) if team_ids else ""
         ws.write(row_num, 5, team_ids_str, font_style)
-        ws.write(row_num, 6, user.accommodation_required, font_style)  # Fix the column index here
+        ws.write(row_num, 6, user.accommodation_required, font_style) 
 
     wb.save(response)
     return response
