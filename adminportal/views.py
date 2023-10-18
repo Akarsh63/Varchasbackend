@@ -116,6 +116,7 @@ def dashboardUsers(request):
 def downloadExcel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="Varchas.xlsx"'
+    return response
     wb = xlwt.Workbook(encoding='utf-8')
 
     ws = wb.add_sheet("Teams")
@@ -170,7 +171,7 @@ def downloadExcel(request):
         ws.write(row_num, 6, user.accommodation_required, font_style) 
 
     wb.save(response)
-    return response
+    
 
 @login_required(login_url='login')
 def teaminfo(request):
