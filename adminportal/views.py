@@ -115,7 +115,7 @@ def dashboardUsers(request):
 @login_required(login_url='login')
 def downloadExcel(request):
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="Varchas.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="Varchas.xls"'
     wb = xlwt.Workbook(encoding='utf-8')
 
     ws = wb.add_sheet("Teams")
@@ -146,8 +146,7 @@ def downloadExcel(request):
             ws.write(row_num, 5, team.captian.phone, font_style)
             ws.write(row_num, 6, team.college, font_style)
             # ws.write(row_num, 7, members, font_style)
-    wb.save(response)
-    return response
+    
     ws = wb.add_sheet("Users")
     row_num = 0
     font_style = xlwt.XFStyle()
@@ -169,7 +168,8 @@ def downloadExcel(request):
         team_ids_str = ', '.join(team_ids) if team_ids else ""
         ws.write(row_num, 5, team_ids_str, font_style)
         ws.write(row_num, 6, user.accommodation_required, font_style) 
-
+    wb.save(response)
+    return response
     
     
 
