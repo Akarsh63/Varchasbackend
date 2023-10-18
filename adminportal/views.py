@@ -122,7 +122,7 @@ def downloadExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['TeamID', 'Sport', 'Category', 'Sub Event', 'Captain', 'Captain no.', 'College', 'Members']
+    columns = ['TeamID', 'Sport', 'Category', 'Sub Event', 'Captain', 'Captain no.', 'College']
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
@@ -131,12 +131,12 @@ def downloadExcel(request):
 
     for team in teams:
         if team.captian is not None:  # Fix for captain not equal to None
-            team_members = []
-            for user in users:
-                if user.teamId.filter(teamId=team.teamId).exists():
-                    team_members.append(user.user.first_name)
-            team_members_str = ', '.join(team_members) if team_members else ""
-            members = team_members_str
+            # team_members = []
+            # for user in users:
+            #     if user.teamId.filter(teamId=team.teamId).exists():
+            #         team_members.append(user.user.first_name)
+            # team_members_str = ', '.join(team_members) if team_members else ""
+            # members = team_members_str
             row_num += 1
             ws.write(row_num, 0, team.teamId, font_style)
             ws.write(row_num, 1, team.get_sport_display(), font_style)
@@ -145,7 +145,7 @@ def downloadExcel(request):
             ws.write(row_num, 4, team.captian.user.first_name, font_style)
             ws.write(row_num, 5, team.captian.phone, font_style)
             ws.write(row_num, 6, team.college, font_style)
-            ws.write(row_num, 7, members, font_style)
+            # ws.write(row_num, 7, members, font_style)
     wb.save(response)
     return response
     ws = wb.add_sheet("Users")
