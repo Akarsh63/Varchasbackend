@@ -54,7 +54,7 @@ ROOT_URLCONF = 'varchas_iitj.urls'
 
 SIMPLE_JWT = {
      'ACCESS_TOKEN_LIFETIME': timedelta(minutes=19000000),
-     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+     'REFRESH_TOKEN_LIFETIME': timedelta(days=1000),
      'ROTATE_REFRESH_TOKENS': True,
      'BLACKLIST_AFTER_ROTATION': True
 }
