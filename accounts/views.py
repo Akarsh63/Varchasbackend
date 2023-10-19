@@ -255,15 +255,34 @@ def userDisplayteam(request):
         if user_profile.teamId.exists():
             teams = user_profile.teamId.all()
             for team in teams:
-                team_users_info = [
-                    {
-                        "user_id": user_data.user.id,
-                        "email": user_data.user.username,
-                        "phone": user_data.phone,
-                        "name": user_data.user.first_name + user_data.user.last_name
-                    }
-                    for user_data in UserProfile.objects.filter(teamId=team)
-                ]
+                if int(team.sport==13):
+                    team_users_info=[
+                        {"Player1_id":user_profile.team_member1_bgmi_ingame_id},
+                        {"Player2_id":user_profile.team_member2_bgmi_ingame_id},
+                        {"Player3_id":user_profile.team_member3_bgmi_ingame_id},
+                        {"Player4_id":user_profile.team_member4_bgmi_ingame_id}]
+                elif int(team.sport==14):
+                    team_users_info=[
+                        {"Player1_id":user_profile.team_member1_val_ingame_id},
+                        {"Player2_id":user_profile.team_member2_val_ingame_id},
+                        {"Player3_id":user_profile.team_member3_val_ingame_id},
+                        {"Player4_id":user_profile.team_member4_val_ingame_id},
+                        {"Player5_id":user_profile.team_member5_val_ingame_id}
+                    ]
+                elif int(team.sport==15):
+                    team_users_info=[
+                        {"Player_id":user_profile.team_member1_cr_ingame_id}
+                    ]
+                else:
+                    team_users_info = [
+                        {
+                            "user_id": user_data.user.id,
+                            "email": user_data.user.username,
+                            "phone": user_data.phone,
+                            "name": user_data.user.first_name + user_data.user.last_name
+                        }
+                        for user_data in UserProfile.objects.filter(teamId=team)
+                    ]
                 team_info = {
                     "team_id": team.teamId,
                     "sport": team.sport,
