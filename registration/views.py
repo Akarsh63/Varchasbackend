@@ -104,7 +104,7 @@ def CreateTeamView(request):
             # except Exception as e:
             #     print(f"Email could not be sent. Error: {str(e)}")
             user_profile.teamId.add(team)
-            if sport_info in [13, 15]:
+            if sport_info in [13,14,15]:
                     team.teamcount = team.teamsize
                     team.save()
                     print(sport_info)
