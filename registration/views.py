@@ -107,6 +107,8 @@ def CreateTeamView(request):
             if sport_info in [13, 15]:
                     team.teamcount = team.teamsize
                     team.save()
+                    print(sport_info)
+                    print(request.data.get('team_id'))
                     if sport_info == 13:
                         user_profile.team_member1_bgmi_ingame_id = request.data.get('team_id', {}).get('id1')
                         user_profile.team_member2_bgmi_ingame_id = request.data.get('team_id', {}).get('id2')
