@@ -255,13 +255,13 @@ def userDisplayteam(request):
         if user_profile.teamId.exists():
             teams = user_profile.teamId.all()
             for team in teams:
-                if int(team.sport==13):
+                if int(team.sport)==13:
                     team_users_info=[
                         {"Player1_id":user_profile.team_member1_bgmi_ingame_id},
                         {"Player2_id":user_profile.team_member2_bgmi_ingame_id},
                         {"Player3_id":user_profile.team_member3_bgmi_ingame_id},
                         {"Player4_id":user_profile.team_member4_bgmi_ingame_id}]
-                elif int(team.sport==14):
+                elif int(team.sport)==14:
                     team_users_info=[
                         {"Player1_id":user_profile.team_member1_val_ingame_id},
                         {"Player2_id":user_profile.team_member2_val_ingame_id},
@@ -269,7 +269,7 @@ def userDisplayteam(request):
                         {"Player4_id":user_profile.team_member4_val_ingame_id},
                         {"Player5_id":user_profile.team_member5_val_ingame_id}
                     ]
-                elif int(team.sport==15):
+                elif int(team.sport)==15:
                     team_users_info=[
                         {"Player_id":user_profile.team_member1_cr_ingame_id}
                     ]
