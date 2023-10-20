@@ -187,6 +187,7 @@ def manage_teams(request):
 
             if team in user.teamId.all():
                 user.teamId.remove(team)
+                team.teamcount=team.teamcount-1
                 if team.captian ==user:
                     team.delete()
                 return render(request,"adminportal/manageteams.html",{"msg":"Team removed from the user's profile successfully."})
