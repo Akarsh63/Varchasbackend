@@ -1,0 +1,53 @@
+{% extends 'adminportal/base.html' %}
+{% load static %}
+{% block body %}
+<style>
+  form{
+    margin-bottom: 10px ;
+  }
+  select{
+    margin: auto;
+  }
+  input[type=text] {
+  padding: 8px 15px;
+  box-sizing: border-box;
+  background-color:#e6e6e6;
+  border-radius:5px;
+  width:300px
+  }
+  button {
+  background-color: #4e73df;
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  width:300px
+}
+
+button:hover {
+  background-color:#2e59d9;
+}
+
+</style>
+<div>
+<form action="{% url 'adminportal:manage_teams'  %}" method="post">
+        {% csrf_token %}
+        <h5 style="color:grey">Remove a player from the team</h5>
+        <div style="display:flex;margin-top:25px;flex-direction:column;gap:15px">
+            <input placeholder="Enter Team ID" type="text" name="teamid"/>
+            <input placeholder="Enter Username(Email)" type="text" name="username"/>
+            <button type="submit" >Remove</button>
+        </div>
+</form>
+<div>
+      <p >{{msg}}</p>
+  </div>
+
+  </div>
+
+   
+{% endblock %}

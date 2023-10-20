@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import dashboardTeams
-from .views import dashboardUsers, dashboard, downloadExcel, sendMail, updateScore,teaminfo
+from .views import dashboardUsers, dashboard, downloadExcel, sendMail, updateScore,teaminfo,manage_teams
 # from django.conf.urls import url
 
 app_name = 'adminportal'
@@ -15,4 +15,5 @@ urlpatterns = [
     # path('excelEsports', downloadEsportsExcel, name='esportsInfo'),
     path('teamdetails',teaminfo , name='teamdetails'),
     path('', dashboard, name='dashboard'),
+    path('manageteams',manage_teams,name='manage_teams')
 ]

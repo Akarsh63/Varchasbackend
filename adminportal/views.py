@@ -172,6 +172,33 @@ def downloadExcel(request):
     return response
     
     
+@login_required(login_url='login')
+def manage_teams(request):
+    if not request.user.is_superuser:
+        return render(request, "404.html")
+
+    if request.method == 'POST':
+        team_id = request.POST.get('teamid')
+        username = request.POST.get('username')
+
+        try:
+            team = TeamRegistration.objects.get(teamId=team_id)
+            user = UserProfile.objects.get(user__email=username)
+
+            if team in user.teamId.all():
+                user.teamId.remove(team)
+                if team.captian ==user:
+                    team.delete()
+                return render(request,"adminportal/manageteams.html",{"msg":"Team removed from the user's profile successfully."})
+            else:
+                return render(request,"adminportal/manageteams.html",{"msg":"The specified user is not a member of the team."})
+        except TeamRegistration.DoesNotExist:
+            return render(request,"adminportal/manageteams.html",{"msg":"The specified team does not exist."})
+        except UserProfile.DoesNotExist:
+            return render(request,"adminportal/manageteams.html",{"msg":"The specified user does not exist."})
+
+    return render(request, "adminportal/manageteams.html")
+                
 
 @login_required(login_url='login')
 def teaminfo(request):
