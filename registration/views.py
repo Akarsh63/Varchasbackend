@@ -104,8 +104,7 @@ def CreateTeamView(request):
             # except Exception as e:
             #     print(f"Email could not be sent. Error: {str(e)}")
             user_profile.teamId.add(team)
-            if sport_info in [13, 15]:
-                    team.teamcount = team.teamsize
+            if sport_info in [13,14,15]:
                     team.save()
                     if sport_info == 13:
                         user_profile.team_member1_bgmi_ingame_id = request.data.get('team_id', {}).get('id1')
@@ -120,10 +119,7 @@ def CreateTeamView(request):
                         user_profile.team_member5_val_ingame_id = request.data.get('team_id', {}).get('id5')
                     if sport_info ==15 :
                         user_profile.team_member1_cr_ingame_id =request.data.get('team_id', {}).get('id1')
-
-
                     user_profile.isesports = True
-                
             user_profile.save()
             print(user_profile)
         return Response({"message": "Team(s) created successfully."}, status=status.HTTP_201_CREATED)
@@ -135,17 +131,12 @@ def CreateTeamView(request):
 def removeplayer(request):
     user = request.user
     user_profile = UserProfile.objects.get(user=user)
-    team_id = user_profile.teamId
-
-    if user_profile.teamId is None:
-        return Response({"message": "You must be registered in a team to complete this operation."},
-                        status=status.HTTP_400_BAD_REQUEST)
-
+    team_id = request.data.get('teamId')
     team = TeamRegistration.objects.get(teamId=team_id)
     if user_profile != team.captian:
         return Response({"message": "Only the captain can remove a player from the team."},
                         status=status.HTTP_401_UNAUTHORIZED)
-
+        
     user_to_remove_id = request.data.get('user')
     user_to_remove = User.objects.filter(id=user_to_remove_id).first()  # Get the User object
     
@@ -155,14 +146,11 @@ def removeplayer(request):
 
     player_to_remove = UserProfile.objects.filter(user=user_to_remove).first()  # Get the associated UserProfile
     
-    if player_to_remove is None:
-        return Response({"message": "The specified user is not in the team."},
-                        status=status.HTTP_400_BAD_REQUEST)
     if user_profile == player_to_remove:
         return Response({"message": "You can not remove your self"},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    player_to_remove.teamId = None
+    player_to_remove.teamId.remove(team)
     player_to_remove.save()
     team.teamcount=team.teamcount-1
     team.save()

@@ -47,14 +47,14 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", "http://localhost:3002","https://www.varchas23.in"
+    "http://localhost:3000", "http://localhost:3002","https://www.varchas23.in","http://172.31.4.24:3000"
 ]
 
 ROOT_URLCONF = 'varchas_iitj.urls'
 
 SIMPLE_JWT = {
      'ACCESS_TOKEN_LIFETIME': timedelta(minutes=19000000),
-     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+     'REFRESH_TOKEN_LIFETIME': timedelta(days=1000),
      'ROTATE_REFRESH_TOKENS': True,
      'BLACKLIST_AFTER_ROTATION': True
 }

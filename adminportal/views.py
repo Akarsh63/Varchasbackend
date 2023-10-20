@@ -112,7 +112,6 @@ def dashboardUsers(request):
         return render(request, "404")
     users = UserProfile.objects.all().order_by('-user__date_joined')
     return render(request, 'adminportal/dashboardUsers.html', {'users': users})
-
 @login_required(login_url='login')
 def downloadExcel(request):
     response = HttpResponse(content_type='application/ms-excel')
@@ -123,52 +122,56 @@ def downloadExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['TeamID', 'Sport', 'Category','Sub Event', 'Captain', 'Captain no.', 'College','Members']
+    columns = ['TeamID', 'Sport', 'Category', 'Sub Event', 'Captain', 'Captain no.', 'College']
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
-    font_style = xlwt.XFStyle()
-    teams = TeamRegistration.objects.all().order_by('-captian__user__date_joined')
+
+    teams = TeamRegistration.objects.all()
     users = UserProfile.objects.all()
+
     for team in teams:
-        if team.captian != None:
-            team_members = []
-            for user in users:
-                if user.teamId.filter(teamId=team.teamId).exists():
-                    team_members.append(user.user.first_name)
-            team_members_str = ', '.join(team_members) if team_members else ""
-            members = team_members_str
-            row_num = row_num + 1
+        if team.captian is not None:  # Fix for captain not equal to None
+            # team_members = []
+            # for user in users:
+            #     if user.teamId.filter(teamId=team.teamId).exists():
+            #         team_members.append(user.user.first_name)
+            # team_members_str = ', '.join(team_members) if team_members else ""
+            # members = team_members_str
+            row_num += 1
             ws.write(row_num, 0, team.teamId, font_style)
             ws.write(row_num, 1, team.get_sport_display(), font_style)
             ws.write(row_num, 2, team.category, font_style)
-            ws.write(row_num, 3, team.teams, font_style)
+            ws.write(row_num, 3, team.teams, font_style)  # Fix the field name here
             ws.write(row_num, 4, team.captian.user.first_name, font_style)
             ws.write(row_num, 5, team.captian.phone, font_style)
             ws.write(row_num, 6, team.college, font_style)
-            ws.write(row_num, 7, members, font_style)
-
+            # ws.write(row_num, 7, members, font_style)
+    
     ws = wb.add_sheet("Users")
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['Email', 'Name', 'Phone Number', 'Gender', 'College', 'teamId', 'Accomodation']
+    columns = ['Email', 'Name', 'Phone Number', 'Gender', 'College', 'teamId', 'Accommodation']  
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
-    font_style = xlwt.XFStyle()
-    users = UserProfile.objects.all().order_by('-user__date_joined')
+
+    users = UserProfile.objects.all()
+
     for user in users:
-        row_num = row_num + 1
+        row_num += 1
         ws.write(row_num, 0, user.user.email, font_style)
-        ws.write(row_num, 1, user.user.first_name+" "+user.user.last_name, font_style)
+        ws.write(row_num, 1, user.user.first_name + " " + user.user.last_name, font_style)
         ws.write(row_num, 2, user.phone, font_style)
         ws.write(row_num, 3, user.gender, font_style)
         ws.write(row_num, 4, user.college, font_style)
         team_ids = [team.teamId for team in user.teamId.all()] if user.teamId.exists() else []
         team_ids_str = ', '.join(team_ids) if team_ids else ""
         ws.write(row_num, 5, team_ids_str, font_style)
-        ws.write(row_num, 7, user.accommodation_required, font_style)
+        ws.write(row_num, 6, user.accommodation_required, font_style) 
     wb.save(response)
     return response
+    
+    
 
 @login_required(login_url='login')
 def teaminfo(request):
