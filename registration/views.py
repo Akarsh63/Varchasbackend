@@ -105,9 +105,7 @@ def CreateTeamView(request):
             #     print(f"Email could not be sent. Error: {str(e)}")
             user_profile.teamId.add(team)
             if sport_info in [13,14,15]:
-                    team.teamcount = team.teamsize
                     team.save()
-                    
                     if sport_info == 13:
                         user_profile.team_member1_bgmi_ingame_id = request.data.get('team_id', {}).get('id1')
                         user_profile.team_member2_bgmi_ingame_id = request.data.get('team_id', {}).get('id2')
@@ -121,8 +119,6 @@ def CreateTeamView(request):
                         user_profile.team_member5_val_ingame_id = request.data.get('team_id', {}).get('id5')
                     if sport_info ==15 :
                         user_profile.team_member1_cr_ingame_id =request.data.get('team_id', {}).get('id1')
-
-
                     user_profile.isesports = True
             user_profile.save()
             print(user_profile)
