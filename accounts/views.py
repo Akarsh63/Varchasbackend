@@ -284,6 +284,7 @@ def userDisplayteam(request):
                         for user_data in UserProfile.objects.filter(teamId=team)
                     ]
                 team_info = {
+                    "event":team.teams,
                     "team_id": team.teamId,
                     "sport": team.sport,
                     "college": team.college,
