@@ -137,7 +137,7 @@ def removeplayer(request):
         return Response({"message": "Only the captain can remove a player from the team."},
                         status=status.HTTP_401_UNAUTHORIZED)
         
-    user_to_remove_id = request.data.get('user')
+    user_to_remove_id = request.data.get('user_id')
     user_to_remove = User.objects.filter(id=user_to_remove_id).first()  # Get the User object
     
     if user_to_remove is None:
