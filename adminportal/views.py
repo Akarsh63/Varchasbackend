@@ -183,11 +183,14 @@ def manage_teams(request):
     if request.method == 'POST':
         team_id = request.POST.get('teamid')
         username = request.POST.get('username')
-
+        print(team_id)
+        print(username)
         try:
             team = TeamRegistration.objects.get(teamId=team_id)
             user = UserProfile.objects.get(user__email=username)
-
+            print(user)
+            print(team)
+            print(user.teamId.all())
             if team in user.teamId.all():
                 user.teamId.remove(team)
                 team.teamcount=team.teamcount-1
