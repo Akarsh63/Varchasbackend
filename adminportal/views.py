@@ -112,6 +112,7 @@ def dashboardUsers(request):
         return render(request, "404")
     users = UserProfile.objects.all().order_by('-user__date_joined')
     return render(request, 'adminportal/dashboardUsers.html', {'users': users})
+
 @login_required(login_url='login')
 def downloadExcel(request):
     response = HttpResponse(content_type='application/ms-excel')
@@ -122,30 +123,32 @@ def downloadExcel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['TeamID', 'Sport', 'Category', 'Sub Event', 'Captain', 'Captain no.', 'College']
+    columns = ['TeamID', 'Sport', 'Category', 'Sub Event', 'Captain', 'Captain no.', 'College','Members']
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
     teams = TeamRegistration.objects.all()
     users = UserProfile.objects.all()
+    team_members = {}
+    for team in teams:
+        team_members[team.teamId] = []
+    for user in users:
+        for team in user.teamId.all():
+            team_members[team.teamId].append(user.user.first_name)
 
     for team in teams:
-        if team.captian is not None:  # Fix for captain not equal to None
-            # team_members = []
-            # for user in users:
-            #     if user.teamId.filter(teamId=team.teamId).exists():
-            #         team_members.append(user.user.first_name)
-            # team_members_str = ', '.join(team_members) if team_members else ""
-            # members = team_members_str
+        if team.captian is not None:
+            team_members_str = ', '.join(team_members[team.teamId]) if team_members else ""
+            members = team_members_str
             row_num += 1
             ws.write(row_num, 0, team.teamId, font_style)
             ws.write(row_num, 1, team.get_sport_display(), font_style)
             ws.write(row_num, 2, team.category, font_style)
-            ws.write(row_num, 3, team.teams, font_style)  # Fix the field name here
+            ws.write(row_num, 3, team.teams, font_style) 
             ws.write(row_num, 4, team.captian.user.first_name, font_style)
             ws.write(row_num, 5, team.captian.phone, font_style)
             ws.write(row_num, 6, team.college, font_style)
-            # ws.write(row_num, 7, members, font_style)
+            ws.write(row_num, 7, members, font_style)
     
     ws = wb.add_sheet("Users")
     row_num = 0
