@@ -219,7 +219,7 @@ def userjoinTeam(request):
             if sport_info in [1,2,3,4,5,6,7,8,9,10,11,12] :
                 teams=user.teamId.all()
                 for team in teams:
-                    if int(team.sport) in [2,3,4,5,6,7,8,9,10,11,12] :
+                    if int(team.sport) in [3,4,5,6,7,8,9,10,11,12] :
                             message = "You are not able to join the team. \nOnly one team can be joined per user."
                             message += "\nYou have to register again to join another team. \nContact Varchas administrators."
                             return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -230,6 +230,16 @@ def userjoinTeam(request):
                             return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
                           teamdata=TeamRegistration.objects.get(teamId=teamId)
                           if sport_info ==1 and teamdata.category==team.category and teamdata.teams==team.teams:
+                            message = "You are not able to join the team. \nOnly one team can be joined per user."
+                            message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                            return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                    if int(team.sport) ==2:
+                          if sport_info!=2:
+                            message = "You are not able to join the team. \nOnly one team can be joined per user."
+                            message += "\nYou have to register again to join another team. \nContact Varchas administrators."
+                            return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                          teamdata=TeamRegistration.objects.get(teamId=teamId)
+                          if sport_info ==2 and teamdata.category==team.category:
                             message = "You are not able to join the team. \nOnly one team can be joined per user."
                             message += "\nYou have to register again to join another team. \nContact Varchas administrators."
                             return Response({"message": message}, status=status.HTTP_406_NOT_ACCEPTABLE)
